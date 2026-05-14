@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Srishti Scheme - Citizen Carbon Tracker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Srishti - Sustainable India Citizen Dashboard</h1>
+      <p>
+        A Government of India initiative to help citizens measure emissions and
+        strengthen environmental contributions.
+      </p>
+    </header>
+
+    <main class="container">
+      <section class="panel">
+        <h2>Citizen Profile</h2>
+        <form id="profileForm" class="grid-form">
+          <label>
+            Full Name
+            <input id="name" type="text" placeholder="Enter your name" required />
+          </label>
+          <label>
+            City
+            <input id="city" type="text" placeholder="Enter your city" required />
+          </label>
+          <label>
+            Monthly Carbon Target (kg CO₂)
+            <input
+              id="target"
+              type="number"
+              min="1"
+              step="1"
+              placeholder="e.g. 180"
+              required
+            />
+          </label>
+          <button type="submit">Save Profile</button>
+        </form>
+        <p id="profileSummary" class="muted"></p>
+      </section>
+
+      <section class="panel">
+        <h2>Log Carbon Activity</h2>
+        <form id="emissionForm" class="grid-form">
+          <label>
+            Category
+            <select id="category" required>
+              <option value="transport">Transport (car)</option>
+              <option value="electricity">Electricity</option>
+              <option value="lpg">LPG Usage</option>
+              <option value="flight">Flight Travel</option>
+            </select>
+          </label>
+          <label>
+            Quantity
+            <input
+              id="quantity"
+              type="number"
+              min="0.1"
+              step="0.1"
+              placeholder="e.g. 10"
+              required
+            />
+          </label>
+          <label>
+            Unit
+            <input id="unit" type="text" placeholder="km / kWh / kg / hour" required />
+          </label>
+          <button type="submit">Add Activity</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Log Environmental Contribution</h2>
+        <form id="contributionForm" class="grid-form">
+          <label>
+            Trees Planted (count)
+            <input id="trees" type="number" min="0" step="1" value="0" required />
+          </label>
+          <label>
+            Cycling/Walking Distance (km)
+            <input id="greenKm" type="number" min="0" step="0.1" value="0" required />
+          </label>
+          <label>
+            Waste Recycled (kg)
+            <input id="recycled" type="number" min="0" step="0.1" value="0" required />
+          </label>
+          <button type="submit">Add Contribution</button>
+        </form>
+      </section>
+
+      <section class="panel dashboard">
+        <h2>Monthly Progress Dashboard</h2>
+        <div class="cards">
+          <article>
+            <h3>Total Emissions</h3>
+            <p><span id="totalEmissions">0</span> kg CO₂</p>
+          </article>
+          <article>
+            <h3>Total Positive Offset</h3>
+            <p><span id="totalOffset">0</span> kg CO₂e</p>
+          </article>
+          <article>
+            <h3>Net Footprint</h3>
+            <p><span id="netFootprint">0</span> kg CO₂e</p>
+          </article>
+          <article>
+            <h3>Target Achievement</h3>
+            <p><span id="targetProgress">0</span>%</p>
+          </article>
+        </div>
+        <div class="progress-wrap" aria-label="target progress">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Activity & Contribution History</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Details</th>
+              <th>Impact (kg CO₂e)</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+  </html>

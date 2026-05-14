@@ -53,8 +53,9 @@ function saveData() {
 }
 
 function formatNumber(value, decimals = 2) {
-  return value != null && !Number.isNaN(Number(value))
-    ? Number(value).toFixed(decimals)
+  const numericValue = Number(value);
+  return value != null && !Number.isNaN(numericValue)
+    ? numericValue.toFixed(decimals)
     : (0).toFixed(decimals);
 }
 
@@ -111,8 +112,8 @@ function renderDashboard() {
 
   const netFootprint = totalEmissions - totalOffset;
   const target = Number(data.profile.target || 0);
-  const usage = target > 0 ? (netFootprint / target) * 100 : 0;
-  const safeProgress = Math.max(0, Math.min(100, usage));
+  const targetUsagePercent = target > 0 ? (netFootprint / target) * 100 : 0;
+  const safeProgress = Math.max(0, Math.min(100, targetUsagePercent));
   const exceeded = target > 0 && netFootprint > target;
 
   document.getElementById("totalEmissions").textContent = formatNumber(totalEmissions);

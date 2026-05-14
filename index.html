@@ -114,8 +114,16 @@
           </article>
         </div>
         <div class="progress-wrap" aria-label="target progress">
-          <div id="progressBar" class="progress-bar"></div>
+          <div
+            id="progressBar"
+            class="progress-bar"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          ></div>
         </div>
+        <p id="targetMessage" class="muted"></p>
       </section>
 
       <section class="panel">

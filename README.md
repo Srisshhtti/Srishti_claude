@@ -13,6 +13,8 @@ No build setup is required.
 1. Open `index.html` directly in a browser, or
 2. Serve the folder with a static server:
    - Python: `python3 -m http.server 8000`
+   - Node.js: `npx serve .`
+   - VS Code: use the Live Server extension
    - Then open `http://localhost:8000`
 
 ## Features

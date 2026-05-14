@@ -12,6 +12,7 @@ const OFFSET_FACTORS = {
 };
 
 const STORAGE_KEY = "srishtiTrackerData";
+const DATE_LOCALE = navigator.language || "en-IN";
 
 const data = {
   profile: { name: "", city: "", target: 0 },
@@ -27,10 +28,14 @@ const profileSummary = document.getElementById("profileSummary");
 function loadData() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (!saved) return;
-  const parsed = JSON.parse(saved);
-  if (parsed?.profile && Array.isArray(parsed.entries)) {
-    data.profile = parsed.profile;
-    data.entries = parsed.entries;
+  try {
+    const parsed = JSON.parse(saved);
+    if (parsed?.profile && Array.isArray(parsed.entries)) {
+      data.profile = parsed.profile;
+      data.entries = parsed.entries;
+    }
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
   }
 }
 
@@ -44,7 +49,7 @@ function toFixed(value) {
 
 function addEntry(type, details, impact) {
   data.entries.unshift({
-    date: new Date().toLocaleDateString("en-IN"),
+    date: new Date().toLocaleDateString(DATE_LOCALE),
     type,
     details,
     impact
@@ -93,12 +98,19 @@ function renderDashboard() {
   const target = Number(data.profile.target || 0);
   const progress = target > 0 ? ((target - netFootprint) / target) * 100 : 0;
   const safeProgress = Math.max(0, Math.min(100, progress));
+  const exceeded = target > 0 && netFootprint > target;
 
   document.getElementById("totalEmissions").textContent = toFixed(totalEmissions);
   document.getElementById("totalOffset").textContent = toFixed(totalOffset);
   document.getElementById("netFootprint").textContent = toFixed(netFootprint);
   document.getElementById("targetProgress").textContent = toFixed(safeProgress);
-  document.getElementById("progressBar").style.width = `${safeProgress}%`;
+  const progressBar = document.getElementById("progressBar");
+  progressBar.style.width = `${safeProgress}%`;
+  progressBar.setAttribute("aria-valuenow", toFixed(safeProgress));
+  const targetMessage = document.getElementById("targetMessage");
+  targetMessage.textContent = exceeded
+    ? `You have exceeded your monthly target by ${toFixed(netFootprint - target)} kg CO₂e.`
+    : "Keep going—your sustainable actions are reducing your footprint.";
 }
 
 function render() {

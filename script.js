@@ -5,6 +5,13 @@ const EMISSION_FACTORS = {
   flight: 90.0
 };
 
+const CATEGORY_UNITS = {
+  transport: "km",
+  electricity: "kWh",
+  lpg: "kg",
+  flight: "hour"
+};
+
 const OFFSET_FACTORS = {
   trees: 21,
   greenKm: 0.15,
@@ -24,6 +31,8 @@ const emissionForm = document.getElementById("emissionForm");
 const contributionForm = document.getElementById("contributionForm");
 const historyTable = document.getElementById("historyTable");
 const profileSummary = document.getElementById("profileSummary");
+const categorySelect = document.getElementById("category");
+const unitSelect = document.getElementById("unit");
 
 function loadData() {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -44,12 +53,12 @@ function saveData() {
 }
 
 function toFixed(value) {
-  return Number(value).toFixed(2);
+  return value != null && !Number.isNaN(Number(value)) ? Number(value).toFixed(2) : "0.00";
 }
 
 function addEntry(type, details, impact) {
   data.entries.unshift({
-    date: new Date().toLocaleDateString(DATE_LOCALE),
+    date: new Date().toISOString(),
     type,
     details,
     impact
@@ -74,9 +83,13 @@ function renderHistory() {
     return;
   }
   data.entries.forEach((entry) => {
+    const parsedDate = new Date(entry.date);
+    const displayDate = Number.isNaN(parsedDate.getTime())
+      ? entry.date
+      : parsedDate.toLocaleDateString(DATE_LOCALE);
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${entry.date}</td>
+      <td>${displayDate}</td>
       <td>${entry.type}</td>
       <td>${entry.details}</td>
       <td>${entry.impact > 0 ? "+" : ""}${toFixed(entry.impact)}</td>
@@ -137,15 +150,19 @@ profileForm.addEventListener("submit", (event) => {
 
 emissionForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const category = document.getElementById("category").value;
+  const category = categorySelect.value;
   const quantity = Number(document.getElementById("quantity").value);
-  const unit = document.getElementById("unit").value.trim();
-  const factor = EMISSION_FACTORS[category] || 0;
+  const unit = unitSelect.value;
+  const factor = EMISSION_FACTORS[category];
+  if (factor == null) {
+    return;
+  }
   const impact = quantity * factor;
   const details = `${category} - ${quantity} ${unit} (factor: ${factor})`;
 
   addEntry("Emission", details, impact);
   emissionForm.reset();
+  unitSelect.value = CATEGORY_UNITS[categorySelect.value];
 });
 
 contributionForm.addEventListener("submit", (event) => {
@@ -164,5 +181,10 @@ contributionForm.addEventListener("submit", (event) => {
   contributionForm.reset();
 });
 
+categorySelect.addEventListener("change", () => {
+  unitSelect.value = CATEGORY_UNITS[categorySelect.value];
+});
+
+unitSelect.value = CATEGORY_UNITS[categorySelect.value];
 loadData();
 render();

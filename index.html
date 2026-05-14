@@ -68,7 +68,12 @@
           </label>
           <label>
             Unit
-            <input id="unit" type="text" placeholder="km / kWh / kg / hour" required />
+            <select id="unit" required disabled>
+              <option value="km">km</option>
+              <option value="kWh">kWh</option>
+              <option value="kg">kg</option>
+              <option value="hour">hour</option>
+            </select>
           </label>
           <button type="submit">Add Activity</button>
         </form>
@@ -113,7 +118,7 @@
             <p><span id="targetProgress">0</span>%</p>
           </article>
         </div>
-        <div class="progress-wrap" aria-label="target progress">
+        <div class="progress-wrap">
           <div
             id="progressBar"
             class="progress-bar"

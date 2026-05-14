@@ -53,8 +53,11 @@ function saveData() {
 }
 
 function formatNumber(value, decimals = 2) {
+  if (value == null) {
+    return (0).toFixed(decimals);
+  }
   const numericValue = Number(value);
-  return value != null && !Number.isNaN(numericValue)
+  return !Number.isNaN(numericValue)
     ? numericValue.toFixed(decimals)
     : (0).toFixed(decimals);
 }
@@ -161,7 +164,7 @@ emissionForm.addEventListener("submit", (event) => {
     return;
   }
   const impact = quantity * factor;
-  const details = `${category} - ${quantity} ${unit} (factor: ${factor})`;
+  const details = `${category} - ${quantity} ${unit}`;
 
   addEntry("Emission", details, impact);
   emissionForm.reset();

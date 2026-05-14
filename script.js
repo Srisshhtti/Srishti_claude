@@ -52,8 +52,10 @@ function saveData() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function toFixed(value) {
-  return value != null && !Number.isNaN(Number(value)) ? Number(value).toFixed(2) : "0.00";
+function formatNumber(value, decimals = 2) {
+  return value != null && !Number.isNaN(Number(value))
+    ? Number(value).toFixed(decimals)
+    : (0).toFixed(decimals);
 }
 
 function addEntry(type, details, impact) {
@@ -73,7 +75,7 @@ function renderProfile() {
     profileSummary.textContent = "Save your profile to personalize monthly target tracking.";
     return;
   }
-  profileSummary.textContent = `Citizen: ${name} (${city}) · Monthly target: ${target} kg CO₂`;
+  profileSummary.textContent = `Citizen: ${name} (${city}) · Monthly target: ${target} kg CO2`;
 }
 
 function renderHistory() {
@@ -92,7 +94,7 @@ function renderHistory() {
       <td>${displayDate}</td>
       <td>${entry.type}</td>
       <td>${entry.details}</td>
-      <td>${entry.impact > 0 ? "+" : ""}${toFixed(entry.impact)}</td>
+      <td>${entry.impact > 0 ? "+" : ""}${formatNumber(entry.impact)}</td>
     `;
     historyTable.appendChild(row);
   });
@@ -113,13 +115,13 @@ function renderDashboard() {
   const safeProgress = Math.max(0, Math.min(100, usage));
   const exceeded = target > 0 && netFootprint > target;
 
-  document.getElementById("totalEmissions").textContent = toFixed(totalEmissions);
-  document.getElementById("totalOffset").textContent = toFixed(totalOffset);
-  document.getElementById("netFootprint").textContent = toFixed(netFootprint);
-  document.getElementById("targetProgress").textContent = toFixed(safeProgress);
+  document.getElementById("totalEmissions").textContent = formatNumber(totalEmissions);
+  document.getElementById("totalOffset").textContent = formatNumber(totalOffset);
+  document.getElementById("netFootprint").textContent = formatNumber(netFootprint);
+  document.getElementById("targetProgress").textContent = formatNumber(safeProgress, 1);
   const progressBar = document.getElementById("progressBar");
   progressBar.style.width = `${safeProgress}%`;
-  progressBar.setAttribute("aria-valuenow", toFixed(safeProgress));
+  progressBar.setAttribute("aria-valuenow", formatNumber(safeProgress, 1));
   const targetMessage = document.getElementById("targetMessage");
   if (!target) {
     targetMessage.textContent = "Set a monthly carbon target in your profile to track progress.";
@@ -127,8 +129,8 @@ function renderDashboard() {
   }
 
   targetMessage.textContent = exceeded
-    ? `You have exceeded your monthly target by ${toFixed(netFootprint - target)} kg CO₂e.`
-    : `You are within target. ${toFixed(target - netFootprint)} kg CO₂e remaining this month.`;
+    ? `You have exceeded your monthly target by ${formatNumber(netFootprint - target)} kg CO2e.`
+    : `You are within target. ${formatNumber(target - netFootprint)} kg CO2e remaining this month.`;
 }
 
 function render() {

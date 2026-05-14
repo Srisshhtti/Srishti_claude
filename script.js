@@ -96,8 +96,8 @@ function renderDashboard() {
 
   const netFootprint = totalEmissions - totalOffset;
   const target = Number(data.profile.target || 0);
-  const progress = target > 0 ? ((target - netFootprint) / target) * 100 : 0;
-  const safeProgress = Math.max(0, Math.min(100, progress));
+  const usage = target > 0 ? (netFootprint / target) * 100 : 0;
+  const safeProgress = Math.max(0, Math.min(100, usage));
   const exceeded = target > 0 && netFootprint > target;
 
   document.getElementById("totalEmissions").textContent = toFixed(totalEmissions);
@@ -108,9 +108,14 @@ function renderDashboard() {
   progressBar.style.width = `${safeProgress}%`;
   progressBar.setAttribute("aria-valuenow", toFixed(safeProgress));
   const targetMessage = document.getElementById("targetMessage");
+  if (!target) {
+    targetMessage.textContent = "Set a monthly carbon target in your profile to track progress.";
+    return;
+  }
+
   targetMessage.textContent = exceeded
     ? `You have exceeded your monthly target by ${toFixed(netFootprint - target)} kg CO₂e.`
-    : "Keep going—your sustainable actions are reducing your footprint.";
+    : `You are within target. ${toFixed(target - netFootprint)} kg CO₂e remaining this month.`;
 }
 
 function render() {
